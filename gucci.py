@@ -1,7 +1,10 @@
 from re import match
 import os
 import discord
+import random
 from dotenv import load_dotenv
+import json
+
 load_dotenv()
 
 __version__ = '0.1.0'
@@ -14,6 +17,15 @@ client = discord.Client()
 SERVER_ID = os.getenv('TEST_SERVER_ID')
 
 
+def random_line(file_name):
+    with open(file_name) as json_file:
+        data = json.load(json_file)
+        random = random.choice(data)
+
+        print(random.values())
+        # return random.choice(lines)
+
+
 @client.event
 async def on_message(message):
     id = client.get_guild(SERVER_ID)
@@ -22,10 +34,19 @@ async def on_message(message):
         return
 
     if client.user.mentioned_in(message) and message.mention_everyone is False:
-        await message.add_reaction('👀')
+        coin_flip = ["emojis", "words"]
+        result = random.choice(coin_flip)
 
-    print("VIA ENV", os.getenv("SELF"))
-    print("VIA CLIENT", client.user.id)
+        if result == "emojis":
+
+            await message.add_reaction(':middle_finger:')
+            # await message.add_reaction('🖕😝🖕')
+            # await message.add_reaction('🖕😎🖕')
+            # await message.add_reaction('🍑')
+        else:
+            random_line("gucci_quotes.json")
+            # print("VIA ENV", os.getenv("SELF"))
+            # print("VIA CLIENT", client.user.id)
 
 
 @client.event
